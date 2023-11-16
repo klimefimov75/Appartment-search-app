@@ -1,0 +1,73 @@
+pip install flask
+# app.py
+
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+# Dummy data for apartments
+apartments = [
+    {"id": 1, "name": "Cozy Apartment", "location": "City A", "price": 1200},
+    {"id": 2, "name": "Modern Loft", "location": "City B", "price": 1500},
+    {"id": 3, "name": "Spacious Condo", "location": "City C", "price": 1800},
+]
+
+@app.route('/')
+def index():
+    return render_template('index.html', apartments=apartments)
+
+@app.route('/search', methods=['POST'])
+def search():
+    location = request.form.get('location')
+    max_price = float(request.form.get('max_price'))
+
+    results = [apt for apt in apartments if apt['location'] == location and apt['price'] <= max_price]
+
+    return render_template('index.html', apartments=results)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .apartment {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Apartment Search</h1>
+
+    <form action="/search" method="post">
+        <label for="location">Location:</label>
+        <input type="text" name="location" required>
+        <br>
+        <label for="max_price">Max Price:</label>
+        <input type="number" name="max_price" required>
+        <br>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Results</h2>
+
+    {% for apt in apartments %}
+        <div class="apartment">
+            <h3>{{ apt.name }}</h3>
+            <p>Location: {{ apt.location }}</p>
+            <p>Price: ${{ apt.price }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
+python app.py
