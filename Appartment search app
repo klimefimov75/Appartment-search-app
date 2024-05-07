@@ -1,8 +1,9 @@
 # app.py
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash
 
 app = Flask(__name__)
+app.secret_key = 'supersecretkey'
 
 class Apartment:
     def __init__(self, id, name, location, price):
@@ -28,11 +29,16 @@ def search():
         location = request.form.get('location')
         max_price = float(request.form.get('max_price'))
 
-        results = [apt for apt in apartments if apt.location == location and apt.price <= max_price]
+        results = [apt for apt in apartments if apt.location.lower() == location.lower() and apt.price <= max_price]
 
-        return render_template('index.html', apartments=results)
+        if results:
+            return render_template('search_results.html', apartments=results)
+        else:
+            flash('No apartments found matching the criteria.')
+            return redirect(url_for('index'))
     except ValueError:
-        return render_template('error.html', message='Invalid input. Please enter a valid number for Max Price.')
+        flash('Invalid input. Please enter a valid number for Max Price.')
+        return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
