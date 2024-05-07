@@ -1,0 +1,74 @@
+<!-- templates/search_results.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+    <ul>
+    {% for apt in apartments %}
+        <li>
+            <h3>{{ apt.name }}</h3>
+            <p>Location: {{ apt.location }}</p>
+            <p>Price: ${{ apt.price }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+    <a href="/">Go back to home</a>
+</body>
+</html>
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apartment Search</title>
+    <style>
+        /* Your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Apartment Search</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li style="color: red;">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form action="/search" method="post">
+        <label for="location">Location:</label>
+        <input type="text" name="location" required>
+        <br>
+        <label for="max_price">Max Price:</label>
+        <input type="number" name="max_price" required>
+        <br>
+        <button type="submit">Search</button>
+    </form>
+
+    <h2>Available Apartments</h2>
+
+    <ul>
+    {% for apt in apartments %}
+        <li>
+            <h3>{{ apt.name }}</h3>
+            <p>Location: {{ apt.location }}</p>
+            <p>Price: ${{ apt.price }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
